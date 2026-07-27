@@ -22,3 +22,9 @@ dist-ssr
 *.sln
 *.sw?
 .env
+
+# Engine runtime assets — provisioned from node_modules by scripts/copy-assets.mjs
+/public/assets/
+
+# Hiking tracks — fetched + geoid-converted by scripts/fetch.py
+/public/data/

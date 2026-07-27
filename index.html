@@ -4,12 +4,31 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Navara</title>
+  <title>3D Hiking Replay · Navara</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+
+    #controls {
+      position: fixed;
+      top: 12px;
+      left: 12px;
+      z-index: 10;
+      display: flex;
+      gap: 6px;
+    }
+  </style>
   <script type="module" src="./src/main.ts"></script>
 </head>
 
-<body style="margin: 0; overflow: hidden">
-  <div id="main"></div>
+<body>
+  <div id="controls">
+    <button id="reset">Reset view</button>
+    <button id="zoomin" title="Zoom in (+)">+</button>
+    <button id="zoomout" title="Zoom out (−)">−</button>
+  </div>
 </body>
 
 </html>

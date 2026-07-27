@@ -82,10 +82,11 @@ export class Playback {
     const span = b.t - a.t;
     const f = span > 0 ? Math.max(0, Math.min(1, (absT - a.t) / span)) : 0;
 
+    const ae = a.ele ?? 0, be = b.ele ?? 0;
     return {
       lng: a.lng + (b.lng - a.lng) * f,
       lat: a.lat + (b.lat - a.lat) * f,
-      ele: a.ele + (b.ele - a.ele) * f,
+      ele: ae + (be - ae) * f,
       heading: bearing(a, b),
       progress: this.duration > 0 ? this.trackTime / this.duration : 0,
       trackTime: this.trackTime,

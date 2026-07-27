@@ -9,15 +9,93 @@
     body {
       margin: 0;
       overflow: hidden;
+      font-family: system-ui, sans-serif;
     }
 
     #controls {
       position: fixed;
       top: 12px;
       left: 12px;
+      right: 12px;
       z-index: 10;
       display: flex;
       gap: 6px;
+    }
+
+    #url {
+      flex: 1;
+      max-width: 420px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      border: 1px solid #bbb;
+    }
+
+    #tape {
+      position: fixed;
+      left: 12px;
+      right: 12px;
+      bottom: 12px;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      background: rgba(20, 20, 24, 0.6);
+      color: #eee;
+      backdrop-filter: blur(4px);
+    }
+
+    #tape button {
+      background: none;
+      border: none;
+      color: inherit;
+      font-size: 18px;
+      cursor: pointer;
+      padding: 2px 4px;
+    }
+
+    #speed {
+      width: 56px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+      color: inherit;
+      padding: 3px 5px;
+      text-align: right;
+    }
+
+    #scrub {
+      position: relative;
+      flex: 1;
+      height: 44px;
+      cursor: pointer;
+      border-radius: 4px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    #scrub svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.45;
+    }
+
+    #played {
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 0;
+      background: rgba(255, 225, 74, 0.18);
+      border-right: 2px solid #ffe14a;
+      pointer-events: none;
+    }
+
+    #clock {
+      font-variant-numeric: tabular-nums;
+      min-width: 96px;
+      text-align: right;
     }
   </style>
   <script type="module" src="./src/main.ts"></script>
@@ -25,9 +103,25 @@
 
 <body>
   <div id="controls">
+    <select id="track" title="Built-in hikes"></select>
+    <input id="url" type="text" title="Track CSV path or URL"
+      value="data/260719/route.csv" />
+    <button id="loadbtn">Load</button>
     <button id="reset">Reset view</button>
     <button id="zoomin" title="Zoom in (+)">+</button>
     <button id="zoomout" title="Zoom out (−)">−</button>
+  </div>
+
+  <div id="tape">
+    <button id="start" title="Go to start">⏮</button>
+    <button id="playpause" title="Play/Pause (Space)">▶</button>
+    <button id="end" title="Go to end">⏭</button>
+    <input id="speed" type="number" min="1" step="10" value="120" title="Playback speed (×)" />
+    <span>×</span>
+    <div id="scrub" title="Click to seek">
+      <div id="played"></div>
+    </div>
+    <span id="clock">0:00 / 0:00</span>
   </div>
 </body>
 

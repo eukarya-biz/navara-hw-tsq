@@ -27,12 +27,7 @@ jobs:
           node-version: 20
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-      - run: pip install pyproj
-      - run: python scripts/fetch.py # fetch + geoid-convert the tracks into public/data/
-      - run: pnpm build             # prebuild provisions engine assets from node_modules
+      - run: pnpm build # prebuild provisions engine assets + downloads tracks into public/data/
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

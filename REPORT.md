@@ -21,13 +21,18 @@ routes look like as motion over real 3D terrain, rather than flat lines on a 2D 
 ## How it's built
 
 - Photoreal base scene (Navara `DefaultPlugin` + Re:Earth terrain + EOX Sentinel-2).
-- Track drawn with `SmoothLineMeshDesc` from raw `{lng, lat, height}` GPS points.
-- Marker is a `SphereMeshDesc` at an ECEF position, moved every animation frame.
+- Track is a ground-clamped polyline (`vector` layer, `polyline.clampToGround`) built from
+  lon/lat only, so it drapes on the DEM at every LOD and needs no elevation or geoid.
+- Marker is a `SphereMeshDesc` moved each frame; its height comes from `sampleTerrainHeight`,
+  so it rides the terrain surface. The camera target uses the same sampled height.
 - Playback maps scaled wall-clock time onto the logs' unix timestamps and interpolates.
+- Tracks are provisioned same-origin into `public/data/` by `scripts/fetch-tracks.mjs` (CI +
+  local, gitignored), which also writes a `tracks.json` manifest. A dropdown lists the
+  built-in hikes; a URL box takes any relative path or full URL.
 
 ## What went well
 
-- TODO (e.g. feeding lng/lat/height straight into SmoothLine — no ECEF math needed for the track)
+- TODO (e.g. `clampToGround` polyline drapes the route on terrain from lon/lat alone — no height or geoid needed)
 - TODO
 - TODO
 
@@ -44,4 +49,4 @@ routes look like as motion over real 3D terrain, rather than flat lines on a 2D 
 
 ## If I had more time
 
-- TODO (e.g. growing "traveled" trail, elevation profile chart, photo/weather waypoint popups, more logs)
+- TODO (e.g. two-tone traveled vs upcoming route, photo/weather waypoint popups, a walking GLTF marker, multi-log compare)

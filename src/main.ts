@@ -2,7 +2,7 @@ import ThreeView, { Color, geodeticToVector3, degreeToRadian } from "@navara/thr
 import { DefaultPlugin, type DefaultDescriptions } from "@navara/three_default_plugin";
 import { SphereMeshDesc } from "@navara/three_default_descs";
 import { loadTrack, loadCatalog, type TrackPoint } from "./data";
-import { Playback, formatDuration } from "./playback";
+import { Playback } from "./playback";
 
 // Photoreal base scene with a self-owned orbit camera that follows the playback marker.
 
@@ -73,11 +73,11 @@ const peakLabelLayer = view.addLayer({
     color: new Color().setStyle("#ffffff"),
     outlineColor: new Color().setStyle("#000000"),
     outlineWidth: 2,
-    sizeInMeters: false,
-    size: 16,
+    sizeInMeters: true, // scale perspectively with distance, so far peaks don't read as large/near ones
+    size: 70,
     clampToGround: true,
     offsetDepth: true, // avoid the label z-fighting into the DEM at the summit
-    depthTest: false,
+    depthTest: true, // let closer terrain/peaks occlude farther labels instead of blending on top
     center: { x: 0.5, y: 0 },
   },
 });
@@ -289,11 +289,18 @@ scrub.addEventListener("click", (e) => {
   playback.seek(((e.clientX - r.left) / r.width) * playback.duration);
 });
 
+const jstFormatter = new Intl.DateTimeFormat("ja-JP", {
+  timeZone: "Asia/Tokyo",
+  hour: "2-digit",
+  minute: "2-digit",
+  hourCycle: "h23",
+});
+
 function updateTape() {
   const frac = playback.duration > 0 ? playback.currentTime / playback.duration : 0;
   played.style.width = `${frac * 100}%`;
   playBtn.textContent = playback.isPlaying ? "⏸" : "▶";
-  clock.textContent = `${formatDuration(playback.currentTime)} / ${formatDuration(playback.duration)}`;
+  clock.textContent = jstFormatter.format(new Date((points[0].t + playback.currentTime) * 1000));
 }
 
 // --- Track source: load any CSV URL (defaults to a Fuji hike). ---

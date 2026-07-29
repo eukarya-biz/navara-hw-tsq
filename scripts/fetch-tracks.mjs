@@ -6,7 +6,7 @@ import { existsSync } from "node:fs";
 import { mkdir, writeFile } from "node:fs/promises";
 
 // A varied set: Fuji, ridge climbs, a gorge, an island loop, a coast walk.
-const HIKES = ["260719", "260412", "260506", "260530", "260509", "260628", "260425", "260320"];
+const HIKES = ["260719", "260412", "260506", "260530", "260509", "260425"];
 const BASE = "https://6e5d.com/hiking";
 
 // visited.csv rows: `lat lon id title ascent descent` (title is a single token).

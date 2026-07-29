@@ -32,24 +32,67 @@ const terrain = view.addSource({
 });
 view.addLayer({ type: "terrain", source: terrain, terrain: { castShadow: true, receiveShadow: true } });
 
+// Esri World Imagery instead of EOX Sentinel-2: the latter is ~10m/px native resolution
+// and looks blocky/blurry once the camera closes in on the trail, since raising maxZoom
+// only upsamples the same coarse tiles. Esri's source imagery is much finer at close zoom.
 const imagery = view.addSource({
   type: "raster-tile",
-  url:
-    "https://tiles.maps.eox.at/wmts?layer=s2cloudless-2020_3857&style=default" +
-    "&tilematrixset=g&Service=WMTS&Request=GetTile" +
-    "&Version=1.0.0&Format=image%2Fjpeg" +
-    "&TileMatrix={z}&TileCol={x}&TileRow={y}",
-  maxZoom: 15,
+  url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+  maxZoom: 19,
 });
 view.addLayer({ type: "raster", source: imagery });
 
 view.attribution?.add([
   { attribution: "© Re:Earth Terrain", attributionUrl: "https://terrain.reearth.land/" },
   {
-    attributionHtml:
-      '<a href="https://s2maps.eu">Sentinel-2 cloudless 2020</a> by <a href="https://eox.at">EOX IT Services GmbH</a> (contains modified Copernicus Sentinel data 2020)',
+    attribution: "© Esri — Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community",
+    attributionUrl: "https://www.esri.com/",
+  },
+  {
+    attribution: "Peak names © OpenStreetMap contributors",
+    attributionUrl: "https://www.openstreetmap.org/copyright",
   },
 ]);
+
+// Peak name labels. GSI's official vector tiles only carry a sparse, curated set of
+// mountain names (misses most local summits, e.g. the whole Numazu Alps ridge), so this
+// is provisioned from OpenStreetMap natural=peak nodes instead (see scripts/fetch-peaks.mjs
+// + scripts/build-peak-tiles.mjs) — community-mapped and far more complete.
+const peakLabels = view.addSource({
+  type: "vector-tile",
+  url: "data/peaks/{z}/{x}/{y}.pbf",
+  maxZoom: 12,
+});
+const peakLabelLayer = view.addLayer({
+  type: "vector",
+  source: peakLabels,
+  sourceLayers: ["peaks"],
+  text: {
+    lang: "ja",
+    font: "https://cdn.jsdelivr.net/fontsource/fonts/noto-sans-jp@latest/japanese-700-normal.woff2",
+    color: new Color().setStyle("#ffffff"),
+    outlineColor: new Color().setStyle("#000000"),
+    outlineWidth: 2,
+    sizeInMeters: false,
+    size: 16,
+    clampToGround: true,
+    offsetDepth: true, // avoid the label z-fighting into the DEM at the summit
+    depthTest: false,
+    center: { x: 0.5, y: 0 },
+  },
+});
+const shownPeaks = new Set<bigint>();
+peakLabelLayer.on("featureUpdated", ({ evaluator }) => {
+  if (shownPeaks.has(evaluator.id)) return;
+  shownPeaks.add(evaluator.id);
+  evaluator.evaluate(
+    ({ properties }) => {
+      const name = properties?.["name"] as string | undefined;
+      return name ? { text: name, show: true } : { text: "", show: false };
+    },
+    { filters: ["name"] },
+  );
+});
 
 const ecef = (lng: number, lat: number, height: number) =>
   geodeticToVector3({ lng: degreeToRadian(lng), lat: degreeToRadian(lat), height });

@@ -4,9 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "provision": "node scripts/copy-assets.mjs && node scripts/fetch-tracks.mjs",
-    "predev": "node scripts/copy-assets.mjs && node scripts/fetch-tracks.mjs",
-    "prebuild": "node scripts/copy-assets.mjs && node scripts/fetch-tracks.mjs",
+    "provision": "node scripts/copy-assets.mjs && node scripts/fetch-tracks.mjs && node scripts/fetch-peaks.mjs && node scripts/build-peak-tiles.mjs",
+    "predev": "node scripts/copy-assets.mjs && node scripts/fetch-tracks.mjs && node scripts/fetch-peaks.mjs && node scripts/build-peak-tiles.mjs",
+    "prebuild": "node scripts/copy-assets.mjs && node scripts/fetch-tracks.mjs && node scripts/fetch-peaks.mjs && node scripts/build-peak-tiles.mjs",
     "dev": "vite --port 8080",
     "build": "tsc && vite build",
     "preview": "vite preview"

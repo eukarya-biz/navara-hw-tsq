@@ -24,8 +24,9 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
+      - run: sudo apt-get update && sudo apt-get install -y tippecanoe
       - run: pnpm install --frozen-lockfile
-      - run: pnpm build # prebuild provisions engine assets + downloads tracks into public/data/
+      - run: pnpm build # prebuild provisions engine assets + downloads tracks/peaks into public/data/
       - uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}

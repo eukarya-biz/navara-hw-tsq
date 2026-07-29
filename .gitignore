@@ -28,3 +28,6 @@ dist-ssr
 
 # Hiking tracks — downloaded same-origin by scripts/fetch-tracks.mjs
 /public/data/
+# peaks.geojson is the exception: the Overpass fetch is slow, so it's committed as a cache
+# (see scripts/fetch-peaks.mjs). The generated tileset (peaks/) stays gitignored.
+!/public/data/peaks.geojson

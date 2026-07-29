@@ -27,7 +27,8 @@ dist-ssr
 /public/assets/
 
 # Hiking tracks — downloaded same-origin by scripts/fetch-tracks.mjs
-/public/data/
+# (/public/data/* not /public/data/ — a parent-directory exclusion can't be negated by git)
+/public/data/*
 # peaks.geojson is the exception: the Overpass fetch is slow, so it's committed as a cache
 # (see scripts/fetch-peaks.mjs). The generated tileset (peaks/) stays gitignored.
 !/public/data/peaks.geojson
